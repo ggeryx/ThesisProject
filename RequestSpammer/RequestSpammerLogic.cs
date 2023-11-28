@@ -1,4 +1,7 @@
-﻿using System.Net;
+﻿using Newtonsoft.Json;
+using RequestSpammer.Models.Dtos;
+using System.Net;
+using System.Text.Json.Serialization;
 
 namespace RequestSpammer
 {
@@ -11,33 +14,42 @@ namespace RequestSpammer
             this.httpClientFactory = httpClientFactory;
         }
 
-        public string SendRequest()
+        public ProcessResponseDto SendRequest()
         {
             var httpClient = httpClientFactory.CreateClient();
             string url = "https://localhost:5000/api/Processor/Process";
             try
             {
                 var request = WebRequest.Create(url);
-                request.Method = "GET";
+                request.Method = "POST";
                 request.ContentType = "application/json";
 
                 using (var streamWriter = new StreamWriter(request.GetRequestStream()))
                 {
-                    streamWriter.Write(DateTime.Now);
+                    
+                    ProcessRequestDto processRequestDto = new ProcessRequestDto()
+                    {
+                        RequestSent = DateTime.Now
+                    };
+                    string json = JsonConvert.SerializeObject(processRequestDto);
+
+
+                    streamWriter.Write(json);
                 }
 
                 var httpResponse = (HttpWebResponse)request.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
                     var result = streamReader.ReadToEnd();
-                    return result;
+                    ProcessResponseDto response = JsonConvert.DeserializeObject<ProcessResponseDto>(result);
+                    return response;
                 }
             }
             catch (Exception e)
             {
                 throw new Exception($"Something went wrong: {e.Message}");
             }
-            finally 
+            finally
             {
                 httpClient.Dispose();
             }

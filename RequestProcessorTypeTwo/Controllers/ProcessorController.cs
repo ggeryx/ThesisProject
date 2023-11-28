@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using RequestProcessor.Models.Dtos;
+using RequestProcessorTypeTwo.Models.Dtos;
 
-namespace RequestProcessor.Controllers
+namespace RequestProcessorTypeTwo.Controllers
 {
     [Route("api/[controller]/")]
     [ApiController]
@@ -10,7 +10,7 @@ namespace RequestProcessor.Controllers
     {
         private readonly ILogger<ProcessorController> logger;
 
-        public ProcessorController(ILogger<ProcessorController> logger) 
+        public ProcessorController(ILogger<ProcessorController> logger)
         {
             this.logger = logger;
         }
@@ -24,7 +24,7 @@ namespace RequestProcessor.Controllers
             var response = new ProcessResponseDto
             {
                 TravelTimeInMilliseconds = travelTime.TotalMilliseconds,
-                ProcessorId = "Sent by RequestProcessor (localhost:5004)"
+                ProcessorId = "Sent by RequestProcessorTypeTwo (localhost:5005)"
             };
 
             return Ok(response);

@@ -1,7 +1,9 @@
-﻿namespace RequestSpammer
+﻿using RequestSpammer.Models.Dtos;
+
+namespace RequestSpammer
 {
     public interface IRequestSpammerLogic
     {
-        public string SendRequest();
+        public ProcessResponseDto SendRequest();
     }
 }
