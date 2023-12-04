@@ -17,7 +17,7 @@ namespace RequestSpammer
         public ProcessResponseDto SendRequest()
         {
             var httpClient = httpClientFactory.CreateClient();
-            string url = "https://localhost:5000/api/Processor/Process";
+            string url = "https://localhost:5000/api/Processor/Process"; //http://localhost:8080/api/Processor/Process this one is for tyk
             try
             {
                 var request = WebRequest.Create(url);
