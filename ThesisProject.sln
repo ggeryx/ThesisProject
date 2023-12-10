@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RequestProcessor", "Request
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RequestProcessorTypeTwo", "RequestProcessorTypeTwo\RequestProcessorTypeTwo.csproj", "{1CD57266-0250-43EF-85F0-79C15A67D236}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockDbAPI", "..\MockDbAPI\MockDbAPI\MockDbAPI.csproj", "{5F137846-3593-4A2F-ABCE-48B29125570E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,10 +45,6 @@ Global
 		{1CD57266-0250-43EF-85F0-79C15A67D236}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CD57266-0250-43EF-85F0-79C15A67D236}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CD57266-0250-43EF-85F0-79C15A67D236}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5F137846-3593-4A2F-ABCE-48B29125570E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5F137846-3593-4A2F-ABCE-48B29125570E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5F137846-3593-4A2F-ABCE-48B29125570E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5F137846-3593-4A2F-ABCE-48B29125570E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

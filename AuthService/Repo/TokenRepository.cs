@@ -8,15 +8,8 @@ namespace AuthService.Repo
 {
     public class TokenRepository : ITokenRepository
     {
-        private readonly IConfiguration configuration; //UPDATE APPSETTINGS JSON!!!
-
-        public TokenRepository(IConfiguration configuration)
-        {
-            this.configuration = configuration;
-        }
         public string CreateJWTToken(IdentityUser user, List<string> roles)
         {
-            // Create claims
             var claims = new List<Claim>();
 
             claims.Add(new Claim(ClaimTypes.Email, user.Email));
@@ -27,14 +20,12 @@ namespace AuthService.Repo
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            //Create Token
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("pvUTFv8Vzof04Ls6x4Eo2Fmny6lC24V1Dkm4oI1iGkJemDBuct5PpNYk"));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                configuration["Jwt:Issuer"],
-                configuration["Jwt:Audience"],
+                "https://localhost:5002/",
+                "https://localhost:5002/",
                 claims,
                 expires: DateTime.Now.AddMinutes(2880), //48 hours LATER : Token refresh policy
                 signingCredentials: credentials);
