@@ -8,12 +8,13 @@ namespace AuthService.Repo
 {
     public class TokenRepository : ITokenRepository
     {
-        public string CreateJWTToken(IdentityUser user, List<string> roles)
+        public string GenerateJWTToken(IdentityUser user, List<string> roles)
         {
-            var claims = new List<Claim>();
-
-            claims.Add(new Claim(ClaimTypes.Email, user.Email));
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
+            var claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.NameIdentifier,user.Id)
+            };
 
             foreach (var role in roles)
             {
@@ -30,7 +31,7 @@ namespace AuthService.Repo
                 expires: DateTime.Now.AddMinutes(2880), //48 hours LATER : Token refresh policy
                 signingCredentials: credentials);
 
-            return new JwtSecurityTokenHandler().WriteToken(token); 
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

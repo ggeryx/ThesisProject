@@ -3,6 +3,7 @@ using AuthService.Repo;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AuthService.Controllers
 {
@@ -19,65 +20,63 @@ namespace AuthService.Controllers
             this.tokenRepository = tokenRepository;
         }
 
-
-        // POST: /Gateway/Auth/Register
         [HttpPost]
         [Route("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDto registerRequestDto)
         {
-            var identityUser = new IdentityUser
+            var user = new IdentityUser
             {
                 UserName = registerRequestDto.Username,
                 Email = registerRequestDto.Username
             };
 
-            var identityResult = await userManager.CreateAsync(identityUser, registerRequestDto.Password);
-
-            if (identityResult.Succeeded)
+            if (registerRequestDto.Roles.IsNullOrEmpty())
             {
-                // ADD ROLES
-                if (registerRequestDto.Roles != null && registerRequestDto.Roles.Any())
-                {
-                    identityResult = await userManager.AddToRolesAsync(identityUser, registerRequestDto.Roles);
-                    if (identityResult.Succeeded)
-                    {
-                        return Ok("User registered! Please log in.");
-                    }
-                }
+                return BadRequest("Roles can't be empty.");
             }
-            return BadRequest("Something wen't wrong during the registration process.");
+
+            var result = await userManager.CreateAsync(user, registerRequestDto.Password);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest("Something went wrong during the registration process.");
+            }
+
+            result = await userManager.AddToRolesAsync(user, registerRequestDto.Roles);
+            if (!result.Succeeded)
+            {
+                await userManager.DeleteAsync(user);
+                return BadRequest("Something went wrong during the registration process.");
+            }
+
+            return Ok("Succesfull registration!");
         }
 
-        // POST: /Gateway/Auth/Login
         [HttpPost]
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
         {
             var user = await userManager.FindByEmailAsync(loginRequestDto.Username);
-
-            if (user != null)
+            if (user == null)
             {
-                var checkPasswordResult = await userManager.CheckPasswordAsync(user, loginRequestDto.Password);
-                if (checkPasswordResult)
-                {
-                    //Get roles for the user
-                    var roles = await userManager.GetRolesAsync(user);
-                    if (roles != null)
-                    {
-                        // CREATE TOKEN
-                        var jwtToken = tokenRepository.CreateJWTToken(user, roles.ToList());
-
-                        LoginResponseDto loginResponseDto = new LoginResponseDto
-                        {
-                            JwtToken = jwtToken,
-                            Username = user.UserName
-                        };
-
-                        return Ok(loginResponseDto);
-                    }
-                }
+                return BadRequest("Incorrect credentials.");
             }
-            return BadRequest("Username or password incorrect.");
+
+            var pwCheck = await userManager.CheckPasswordAsync(user, loginRequestDto.Password);
+            if (pwCheck == false)
+            {
+                return BadRequest("Incorrect credentials.");
+            }
+
+            var roles = await userManager.GetRolesAsync(user);
+
+            var token = tokenRepository.GenerateJWTToken(user, roles.ToList());
+            LoginResponseDto loginResponseDto = new LoginResponseDto
+            {
+                Jwt = token,
+                Username = user.UserName
+            };
+            return Ok(loginResponseDto);
         }
     }
 }

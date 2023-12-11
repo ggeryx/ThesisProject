@@ -2,7 +2,7 @@
 {
     public class LoginResponseDto
     {
-        public string JwtToken { get; set; }
+        public string Jwt { get; set; }
         public string Username { get; set; }
     }
 }

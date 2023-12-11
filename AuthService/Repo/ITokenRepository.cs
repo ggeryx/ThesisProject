@@ -4,6 +4,6 @@ namespace AuthService.Repo
 {
     public interface ITokenRepository
     {
-        string CreateJWTToken(IdentityUser user, List<string> roles);
+        string GenerateJWTToken(IdentityUser user, List<string> roles);
     }
 }
